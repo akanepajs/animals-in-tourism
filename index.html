@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Counting the Uncounted — Animals in Tourism</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal: #0d7377;
+    --teal-dark: #095457;
+    --teal-light: #e6f4f4;
+    --accent: #e8a838;
+    --accent-light: #fdf3e0;
+    --dark: #1a1a2e;
+    --dark-mid: #222240;
+    --text: #2c2c2c;
+    --text-light: #f0f0f0;
+    --muted: #6b7280;
+    --white: #ffffff;
+    --card-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    --card-shadow-dark: 0 4px 24px rgba(0,0,0,0.3);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text);
+    line-height: 1.6;
+    background: var(--white);
+  }
+
+  h1, h2, h3 { font-family: 'DM Serif Display', serif; font-weight: 400; }
+
+  .accent-bar {
+    height: 4px;
+    background: linear-gradient(90deg, var(--teal), var(--accent), var(--teal));
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    background: linear-gradient(135deg, var(--dark) 0%, var(--dark-mid) 50%, var(--teal-dark) 100%);
+    color: var(--text-light);
+    padding: 6rem 1.5rem 5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -20%;
+    width: 60%;
+    height: 140%;
+    background: radial-gradient(ellipse, rgba(13,115,119,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    margin-bottom: 0.3rem;
+    letter-spacing: -0.02em;
+    position: relative;
+  }
+
+  .hero .subtitle {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    color: var(--accent);
+    margin-bottom: 2rem;
+    position: relative;
+  }
+
+  .hero .tagline {
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    max-width: 640px;
+    margin: 0 auto;
+    color: rgba(240,240,240,0.85);
+    line-height: 1.7;
+    position: relative;
+  }
+
+  .hero .tagline strong {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section { padding: 4rem 1.5rem; }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    margin-bottom: 1.5rem;
+    color: var(--teal-dark);
+  }
+
+  .section-title.light {
+    color: var(--text-light);
+  }
+
+  /* ---------- PROBLEM ---------- */
+  .problem {
+    background: var(--white);
+  }
+
+  .problem p {
+    font-size: 1.05rem;
+    max-width: 720px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  .problem-points {
+    list-style: none;
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .problem-points li {
+    padding-left: 1.6rem;
+    position: relative;
+    font-size: 1.05rem;
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  .problem-points li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* ---------- SCALE ---------- */
+  .scale {
+    background: var(--dark);
+    color: var(--text-light);
+  }
+
+  .scale-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    background: rgba(232,168,56,0.12);
+    padding: 0.3rem 0.8rem;
+    border-radius: 100px;
+    margin-bottom: 1rem;
+  }
+
+  .scale-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    margin: 2.5rem 0 2rem;
+  }
+
+  .scale-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+
+  .scale-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .scale-card .region {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(240,240,240,0.5);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .scale-card .number {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3rem);
+    color: var(--accent);
+    line-height: 1.1;
+    margin-bottom: 0.3rem;
+  }
+
+  .scale-card .unit {
+    font-size: 0.85rem;
+    color: rgba(240,240,240,0.6);
+  }
+
+  .botec-formula {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin: 2rem 0 1.5rem;
+    padding: 1.5rem;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .formula-step {
+    text-align: center;
+    padding: 0.5rem 1rem;
+  }
+
+  .formula-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    color: var(--accent);
+    line-height: 1.2;
+  }
+
+  .formula-label {
+    font-size: 0.75rem;
+    color: rgba(240,240,240,0.5);
+    margin-top: 0.2rem;
+  }
+
+  .formula-op {
+    font-size: 1.4rem;
+    color: rgba(240,240,240,0.35);
+    font-weight: 300;
+  }
+
+  .botec-arrow {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    opacity: 0.6;
+  }
+
+  .venue-count {
+    font-size: 0.75rem;
+    color: rgba(240,240,240,0.4);
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+  }
+
+  .scale-caption {
+    font-size: 0.9rem;
+    color: rgba(240,240,240,0.55);
+    text-align: center;
+    font-style: italic;
+    max-width: 640px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* ---------- CATEGORIES ---------- */
+  .categories {
+    background: var(--white);
+  }
+
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+
+  .cat-card {
+    background: var(--white);
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    box-shadow: var(--card-shadow);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .cat-card:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    transform: translateY(-1px);
+  }
+
+  .cat-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--teal-light);
+    border-radius: 10px;
+  }
+
+  .cat-card h3 {
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--teal-dark);
+  }
+
+  .cat-card p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ---------- METHODOLOGY ---------- */
+  .methodology {
+    background: var(--teal-light);
+  }
+
+  .method-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+
+  .method-item {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+  }
+
+  .method-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    color: var(--teal);
+    margin-bottom: 0.5rem;
+  }
+
+  .method-item h3 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+    color: var(--text);
+  }
+
+  .method-item p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ---------- PILOTS ---------- */
+  .pilots {
+    background: var(--white);
+  }
+
+  .pilot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .pilot-card {
+    border-radius: 14px;
+    padding: 2rem;
+    box-shadow: var(--card-shadow);
+    border-top: 4px solid var(--teal);
+  }
+
+  .pilot-card.accent-border {
+    border-top-color: var(--accent);
+  }
+
+  .pilot-flag {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .pilot-card h3 {
+    font-size: 1.2rem;
+    color: var(--teal-dark);
+    margin-bottom: 0.75rem;
+  }
+
+  .pilot-stat {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .pilot-stat .val {
+    font-weight: 700;
+    color: var(--teal);
+    font-size: 1.05rem;
+  }
+
+  .pilot-stat .desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .pilot-note {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    padding-top: 0.75rem;
+    border-top: 1px solid #e5e7eb;
+    line-height: 1.5;
+  }
+
+  /* ---------- TEAM ---------- */
+  .team {
+    background: linear-gradient(135deg, var(--dark) 0%, var(--teal-dark) 100%);
+    color: var(--text-light);
+  }
+
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .team-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 2rem;
+  }
+
+  .team-card h3 {
+    font-size: 1.15rem;
+    color: var(--accent);
+    margin-bottom: 0.25rem;
+  }
+
+  .team-role {
+    font-size: 0.85rem;
+    color: rgba(240,240,240,0.6);
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .team-bio {
+    font-size: 0.9rem;
+    color: rgba(240,240,240,0.8);
+    line-height: 1.6;
+  }
+
+  /* ---------- DETAILS ---------- */
+  .details {
+    background: var(--white);
+  }
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .detail-item {
+    text-align: center;
+    padding: 1.5rem;
+  }
+
+  .detail-icon {
+    font-size: 1.8rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .detail-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+  }
+
+  .detail-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: var(--teal-dark);
+  }
+
+  .detail-sub {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+
+  /* ---------- FOOTER ---------- */
+  .footer {
+    background: var(--dark);
+    color: var(--text-light);
+    padding: 3.5rem 1.5rem 2.5rem;
+    text-align: center;
+  }
+
+  .footer .cta {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    color: var(--accent);
+    margin-bottom: 2rem;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    max-width: 640px;
+    margin: 0 auto 2rem;
+  }
+
+  .contact-person h4 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .contact-person a {
+    color: rgba(240,240,240,0.7);
+    text-decoration: none;
+    font-size: 0.85rem;
+    display: block;
+    line-height: 1.6;
+    transition: color 0.2s;
+  }
+
+  .contact-person a:hover {
+    color: var(--accent);
+  }
+
+  .footer-bottom {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 0.8rem;
+    color: rgba(240,240,240,0.35);
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 600px) {
+    section { padding: 3rem 1.25rem; }
+    .hero { padding: 5rem 1.25rem 4rem; }
+    .scale-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+    .scale-grid .scale-card:last-child { grid-column: 1 / -1; max-width: 50%; margin: 0 auto; }
+    .botec-formula { gap: 0.3rem; padding: 1rem; }
+    .formula-step { padding: 0.3rem 0.5rem; }
+    .scale-card { padding: 1.25rem 1rem; }
+    .cat-grid { grid-template-columns: 1fr; }
+    .pilot-grid { grid-template-columns: 1fr; }
+    .team-grid { grid-template-columns: 1fr; }
+    .method-grid { grid-template-columns: 1fr 1fr; }
+    .details-grid { grid-template-columns: 1fr 1fr; }
+    .contact-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 380px) {
+    .method-grid { grid-template-columns: 1fr; }
+    .details-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="accent-bar"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <h1>Counting the Uncounted</h1>
+    <div class="subtitle">Animals in Tourism</div>
+    <p class="tagline">
+      <strong>$11 trillion</strong> industry. <strong>357 million</strong> jobs.<br>
+      <strong>Unknown number of animals</strong> affected.
+    </p>
+  </div>
+</section>
+
+<!-- THE PROBLEM -->
+<section class="problem">
+  <div class="container">
+    <h2 class="section-title">The Problem</h2>
+    <ul class="problem-points">
+      <li>Animals are embedded across tourism: transport, food, entertainment, wildlife encounters, cultural events.</li>
+      <li>No systematic estimate exists of how many animals are involved.</li>
+      <li>Policy and advocacy operate without this number.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- SCALE / BOTEC EXAMPLE -->
+<section class="scale">
+  <div class="container">
+    <span class="scale-label">Worked example: dining out</span>
+    <h2 class="section-title light">How a BOTEC Works</h2>
+
+    <div class="botec-formula">
+      <div class="formula-step">
+        <div class="formula-value">Dining venues</div>
+        <div class="formula-label">per jurisdiction</div>
+      </div>
+      <div class="formula-op">&times;</div>
+      <div class="formula-step">
+        <div class="formula-value">200</div>
+        <div class="formula-label">meals / venue / day</div>
+      </div>
+      <div class="formula-op">&times;</div>
+      <div class="formula-step">
+        <div class="formula-value">0.2</div>
+        <div class="formula-label">animals / meal</div>
+      </div>
+      <div class="formula-op">&times;</div>
+      <div class="formula-step">
+        <div class="formula-value">365</div>
+        <div class="formula-label">days</div>
+      </div>
+    </div>
+
+    <div class="botec-arrow">&#x25BC;</div>
+
+    <div class="scale-grid">
+      <div class="scale-card">
+        <div class="region">Latvia</div>
+        <div class="venue-count">2,215 venues</div>
+        <div class="number">32M</div>
+        <div class="unit">animals / year</div>
+      </div>
+      <div class="scale-card">
+        <div class="region">North Carolina</div>
+        <div class="venue-count">22,000 venues</div>
+        <div class="number">321M</div>
+        <div class="unit">animals / year</div>
+      </div>
+      <div class="scale-card">
+        <div class="region">EU</div>
+        <div class="venue-count">1.5M venues</div>
+        <div class="number">22B</div>
+        <div class="unit">animals / year</div>
+      </div>
+      <div class="scale-card">
+        <div class="region">US</div>
+        <div class="venue-count">749,000 venues</div>
+        <div class="number">11B</div>
+        <div class="unit">animals / year</div>
+      </div>
+      <div class="scale-card">
+        <div class="region">Global</div>
+        <div class="venue-count">15M venues</div>
+        <div class="number">219B</div>
+        <div class="unit">animals / year</div>
+      </div>
+    </div>
+    <p class="scale-caption">
+      Just one of 43 categories we will estimate. Sources: venue counts from IBISWorld, Statista, B2BReviews; animals-per-meal range from Faunalytics (0.1) and Veestro (0.3), central estimate 0.2.
+    </p>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="categories">
+  <div class="container">
+    <h2 class="section-title">Six Animal-Use Categories</h2>
+    <div class="cat-grid">
+      <div class="cat-card">
+        <div class="cat-icon">&#x1F434;</div>
+        <div>
+          <h3>Transport &amp; Labor</h3>
+          <p>Horses, donkeys, camels, elephants</p>
+        </div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon">&#x1F40B;</div>
+        <div>
+          <h3>Wildlife Tourism</h3>
+          <p>Safaris, marine encounters, sanctuaries</p>
+        </div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon">&#x1F3AA;</div>
+        <div>
+          <h3>Entertainment &amp; Performance</h3>
+          <p>Shows, circuses, photo ops</p>
+        </div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon">&#x1F3A3;</div>
+        <div>
+          <h3>Sporting &amp; Recreation</h3>
+          <p>Fishing, hunting, racing, bullfighting</p>
+        </div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon">&#x1F37D;&#xFE0F;</div>
+        <div>
+          <h3>Food Systems</h3>
+          <p>Restaurants, hotels, cruise ships, street food</p>
+        </div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon">&#x1F981;</div>
+        <div>
+          <h3>Symbolic &amp; Branding</h3>
+          <p>Mascots, cultural rituals, souvenir trade</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METHODOLOGY -->
+<section class="methodology">
+  <div class="container">
+    <h2 class="section-title">Methodology</h2>
+    <div class="method-grid">
+      <div class="method-item">
+        <div class="method-num">01</div>
+        <h3>BOTECs</h3>
+        <p>Back-of-the-envelope calculations across 43 categories using secondary data</p>
+      </div>
+      <div class="method-item">
+        <div class="method-num">02</div>
+        <h3>Deep Dives</h3>
+        <p>Top categories refined with local expert consultation in North Carolina (US) and Latvia (EU)</p>
+      </div>
+      <div class="method-item">
+        <div class="method-num">03</div>
+        <h3>Validation</h3>
+        <p>Sensitivity analysis, double-counting checks, conservative ranges</p>
+      </div>
+      <div class="method-item">
+        <div class="method-num">04</div>
+        <h3>Extrapolation</h3>
+        <p>Validated pilot estimates scaled to US, EU, and global level</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PILOT SITES -->
+<section class="pilots">
+  <div class="container">
+    <h2 class="section-title">Pilot Sites</h2>
+    <div class="pilot-grid">
+      <div class="pilot-card">
+        <div class="pilot-flag">&#x1F1FA;&#x1F1F8;</div>
+        <h3>North Carolina, USA</h3>
+        <div class="pilot-stat">
+          <span class="val">$36.7B</span>
+          <span class="desc">tourism revenue (2024)</span>
+        </div>
+        <div class="pilot-stat">
+          <span class="val">5th</span>
+          <span class="desc">most visited US state</span>
+        </div>
+        <p class="pilot-note">Large domestic market with diverse animal-use categories</p>
+      </div>
+      <div class="pilot-card accent-border">
+        <div class="pilot-flag">&#x1F1F1;&#x1F1FB;</div>
+        <h3>Latvia, EU</h3>
+        <div class="pilot-stat">
+          <span class="val">$3.2B</span>
+          <span class="desc">economic contribution (2023)</span>
+        </div>
+        <div class="pilot-stat">
+          <span class="val">EU</span>
+          <span class="desc">regulatory context</span>
+        </div>
+        <p class="pilot-note">Smaller international market within EU policy framework</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="team">
+  <div class="container">
+    <h2 class="section-title light">Team</h2>
+    <div class="team-grid">
+      <div class="team-card">
+        <h3>Carol Kline</h3>
+        <div class="team-role">Professor, Appalachian State University</div>
+        <p class="team-bio">Founder, Where Animals Matter &mdash; nonprofit transforming global tourism for animal welfare.</p>
+      </div>
+      <div class="team-card">
+        <h3>Artūrs (Art) Kaņepājs</h3>
+        <div class="team-role">Animal Welfare Economics Research</div>
+        <p class="team-bio">Recent work on animal welfare reforms in the EU (pigs, hens, mink).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <p class="cta">Interested in collaborating or funding this work? Get in touch.</p>
+    <div class="contact-grid">
+      <div class="contact-person">
+        <h4>Artūrs (Art) Kaņepājs</h4>
+        <a href="mailto:hello@kanepajs.eu">hello@kanepajs.eu</a>
+        <a href="https://kanepajs.eu" target="_blank" rel="noopener">kanepajs.eu</a>
+      </div>
+      <div class="contact-person">
+        <h4>Carol Kline</h4>
+        <a href="mailto:klinecs@appstate.edu">klinecs@appstate.edu</a>
+        <a href="https://whereanimalsmatters.org" target="_blank" rel="noopener">whereanimalsmatters.org</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      Counting the Uncounted &mdash; Animals in Tourism &middot; 2026
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
