@@ -1,0 +1,37 @@
+# This git repo IS the public GitHub Pages site (akanepajs.github.io/animals-in-tourism).
+# Only the website (index.html + any web assets) should ever be committed/published.
+# Everything below is internal research material: keep it OUT of the public site.
+# It is backed up via OneDrive, not via this repo.
+
+# Input documents, drafts, deliverables
+source/
+workbook/
+botecs/
+notes/
+report/
+reviews/
+versions/
+archive/
+2026-*/
+
+# Loose office files and data anywhere in the tree
+*.docx
+*.xlsx
+*.xlsm
+*.csv
+
+# LibreOffice / Office lock and temp files
+.~lock.*
+~$*
+
+# Internal project docs
+CLAUDE.md
+README.md
+DATA_SOURCES.md
+DATA_DICTIONARY.md
+ASSUMPTIONS.md
+MODULES.md
+
+# OS / tooling
+.DS_Store
+Thumbs.db
